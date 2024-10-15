@@ -66,7 +66,8 @@
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      const socket = io();
+      console.log("connection using domain");
+      const socket = io("http://localhost:7123");
 
       const messages = document.getElementById("messages");
       const form = document.getElementById("form");
@@ -86,6 +87,24 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
+    </script>
+
+    <script>
+      function callback(records) {
+        const lastRecord = records[records.length - 1];
+        console.log(
+          `Current pressure source: ${lastRecord.source}, ${lastRecord.state}`
+        );
+      }
+
+      try {
+        const observer = new PressureObserver(callback);
+        observer.observe("cpu", {
+          sampleInterval: 1000, // 1000ms
+        });
+      } catch (error) {
+        // report error setting up the observer
+      }
     </script>
   </body>
 </html>
